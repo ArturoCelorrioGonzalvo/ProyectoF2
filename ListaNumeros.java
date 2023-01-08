@@ -51,7 +51,7 @@ public class ListaNumeros
         int pos = this.numElementos;
         this.numeros [pos] = n;
         boolean duplicado = false;
-        while(pos > 0 && !duplicado && this.numeros [pos - 1] >= n){
+        while(pos > 0 && !duplicado && this.numeros [pos - 1] > n){
             if (this.numeros [pos - 1] == n){
                 duplicado = true;
             }else{
@@ -126,3 +126,9 @@ public class ListaNumeros
         }
     }
 }
+
+
+
+
+
+

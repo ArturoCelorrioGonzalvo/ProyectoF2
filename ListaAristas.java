@@ -137,11 +137,6 @@ public class ListaAristas{
         }
     }
     
-    public void ordenarLista2(){
-        Arista [] auxiliar = new Arista [this.numDatos];
-        
-    }
-    
     /**
      * Escribe la lista
      */
@@ -188,17 +183,6 @@ public class ListaAristas{
     }
 
     /**
-     * Añade una arista de forma que quede ordenada
-     */
-    public void anadeArista2(Arista ar){
-        int pos = this.busquedaPosDicoAprox(ar);
-        if(pos != -1){
-            this.hazHueco(pos);
-            this.aristas [pos] = ar;
-        }
-    }
-    
-    /**
      * Busca la posición de una arista de forma dicotómica
      */
     public int busquedaPosDico (Arista ar){
@@ -224,32 +208,6 @@ public class ListaAristas{
         }
     } 
     
-    /**
-     * Busca la posición de una arista de forma dicotómica
-     */
-    public int busquedaPosDicoAprox (Arista ar){
-        int m, i, s;
-        i = 0;
-        s = this.numDatos;
-        while(i != s&&i<this.numDatos){
-            m = ( i + s ) / 2 ;
-            if (this.aristas[m].anteriorA(ar)){
-                s = m;
-            }else{
-                i = m + 1;
-            }
-        }
-        if ((this.aristas[i] != null)){
-            if(this.aristas[i].verN1() == ar.verN1()){
-                return -1;
-            }else{
-                return i + 1;
-            }
-        }else {
-            return i;
-        }
-    } 
-    
     public boolean esTerminal(int nodo){
         boolean loEs = false, existe=true;
         int i=0, apoyo;
@@ -266,7 +224,6 @@ public class ListaAristas{
             for(int carro = this.numDatos; carro > hueco; carro --){
                 this.aristas[carro + 1] = this.aristas[carro];
             }
-            this.numDatos ++;
         }
     }
 
