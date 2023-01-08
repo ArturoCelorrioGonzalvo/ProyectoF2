@@ -65,13 +65,15 @@ public class Grafo{
                     }
                 }
             }
-            f.close();
+            this.lista.ordenarLista();
             this.verificaTerminales();
+            f.close();
         }
     }
 
     public Grafo subgrafo (int nodo){
-        Grafo res = new Grafo (this.lista.verNodosInicioIguales(nodo));
+        int test=this.lista.verNodosInicioIguales(nodo) ;
+        Grafo res = new Grafo (test);
         int pos = this.lista.busquedaPosDico(new Arista (nodo, 0, 0));
         int carro = 0;
         boolean otro = true;

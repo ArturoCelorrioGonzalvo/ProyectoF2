@@ -82,12 +82,12 @@ public class ListaAristas{
             res++;
             cont++;
         }
-        if (res==0)return -1;
-        else return res;
+        return res;
     }
     
     /**
-     * Búsqueda dicotómica de la posición de la primera aparición de un nodo inicial en concreto
+     * Búsqueda dicotómica de la posición de la primera aparición 
+     * de un nodo inicial en concreto
      */
     public int verPosNodo(int nodo){
         int indice = -1;
@@ -131,7 +131,7 @@ public class ListaAristas{
             int j=i;
             while(j>0&&!this.aristas[j-1].ordenadoRespA(apoyo)){
                 this.aristas[j]=this.aristas[j-1];
-                j-=1;
+                j=j-1;
             }
             this.aristas[j]=apoyo;
         }
@@ -157,10 +157,10 @@ public class ListaAristas{
         int m, i, s;
         if(!this.listaLlena()){
             i = 0;
-            s = this.numDatos;
+            s = this.numDatos-1;
             while(i != s){
                 m = ( i + s ) / 2 ;
-                if (this.aristas[m].anteriorA(ar)){
+                if (this.aristas[m].ordenadoRespA(ar)){
                     s = m;
                 }else{
                     i = m + 1;
@@ -168,15 +168,15 @@ public class ListaAristas{
             }
             if ((this.aristas[i] != null)){
                 if(!this.aristas[i].igualA(ar)){
-                    this.hazHueco(i + 1);
-                    this.aristas[i + 1] = ar;
+                    this.hazHueco(i);
+                    this.aristas[i] = ar;
                     this.numDatos ++;
                 }else{
                     System.out.println("se han encontrado 2 aristas iguales, la mas reciente "+
                         "se ignorará");
                 }
             }else {
-                this.aristas[i + 1] = ar;
+                this.aristas[i] = ar;
                 this.numDatos ++;
             }
         }

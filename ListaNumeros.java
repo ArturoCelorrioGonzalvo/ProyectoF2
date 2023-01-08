@@ -36,6 +36,9 @@ public class ListaNumeros
         }
     }
     
+    /**
+     * Fusion
+     */
     public void anadir (ListaNumeros otra){
         if(this.distinta(otra)){
             for(int i = 0; i < otra.numElementos; i++){
@@ -82,13 +85,16 @@ public class ListaNumeros
         }
     }
     
+    /**
+     * Filtro
+     */
     public ListaNumeros diferencia (ListaNumeros otra){
         ListaNumeros res = new ListaNumeros(this);
         res.quitar(otra);
         return res;
     }
     
-    public void quitar (ListaNumeros otra){
+    private void quitar (ListaNumeros otra){
         for(int i = 0; i < otra.numElementos; i++){
             this.quitar(otra.numeros[i]);
         }
