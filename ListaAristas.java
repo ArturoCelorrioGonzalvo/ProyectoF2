@@ -9,7 +9,6 @@ import java.io.*;
  */
 public class ListaAristas{
     private Arista aristas[];
-    private Random azar = new Random();
     private int numDatos;
 
     /**
@@ -21,6 +20,14 @@ public class ListaAristas{
             aristas[i] = new Arista();
         }
         this.numDatos=0;
+    }
+    
+    public ListaAristas(ListaAristas lista){
+        this.aristas=new Arista[lista.aristas.length];
+        for(int i=0; i<lista.numDatos; i++){
+            this.aristas[i]=lista.aristas[i];
+        }
+        this.numDatos=lista.numDatos;
     }
     
     public static ListaAristas leerLista(){
@@ -143,7 +150,7 @@ public class ListaAristas{
     public void escribirLista(){
         for(int i=0; i<this.numDatos; i++){
             System.out.printf(Locale.ENGLISH,
-            "El nodo inicial es: %d\n El nodo final es: %d\n El peso de la arista es: %.3f\n"
+            "El nodo inicial es: %1d \t El nodo final es: %2d \t El peso de la arista es: %3$.3f\n"
             , this.aristas[i].verN1(), this.aristas[i].verN2(), 
             this.aristas[i].verPeso());
             
@@ -198,7 +205,7 @@ public class ListaAristas{
             }
         }
         if ((this.aristas[i] != null)){
-            if(this.aristas[i].verN1() == ar.verN1()){
+            if(this.aristas[i].igualA(ar)){
                 return i;
             }else{
                 return -1;
@@ -239,14 +246,7 @@ public class ListaAristas{
         return indice;
     }
 
-    public double existeAristaEntre(int n1, int n2){
-        Arista apoyo = new Arista(n1, n2, 0.0);
-        double res =-1.0;
-        int pos=-1;
-        pos=this.posicionPrimeraArista(apoyo);
-        if(pos!=-1)res=this.aristas[pos].verPeso();
-        return res;
-    }
+    
 
     private int numeroBucles(){
         int res=-1;
@@ -273,5 +273,12 @@ public class ListaAristas{
             }
         }
         return res;
+    }
+    
+    public void quitaArista(Arista ar){
+        int pos = this.busquedaPosDico(ar);
+        if(pos!=-1)
+            for(int i = pos; i+1<this.numDatos; i++)
+                this.aristas[i]=this.aristas[i+1];
     }
 }

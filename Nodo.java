@@ -33,4 +33,9 @@ public class Nodo{
     public double verPesoAc(){
         return this.pesoAc;
     }
+    
+    public boolean igualA(Nodo nod){
+        return this.ident==nod.ident&&this.numPasos==nod.numPasos&&
+        Math.abs(this.pesoAc-nod.pesoAc)<=1.0e-3;
+    }
 }
