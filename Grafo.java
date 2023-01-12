@@ -82,24 +82,13 @@ public class Grafo{
     public ListaAristas subgrafo (int nodo){
         int test=this.lista.verNodosInicioIguales(nodo) ;
         ListaAristas res = new ListaAristas (test);
-
-    public Grafo subgrafo (int nodo){
-        int test=this.lista.verNodosInicioIguales(nodo) ;
-        Grafo res = new Grafo (test);
-
-        int pos = this.lista.busquedaPosDico(new Arista (nodo, 0, 0));
-        int carro = 0;
-        boolean otro = true;
-        if(pos != -1){
-            int i = pos;
-            while(i < this.numNodos && otro){
-                if(this.lista.verArista(i).verN1() == nodo){
-                    res.anadeArista(this.lista.verArista(i));
-                }else{
-                    otro = false;
-                }
-                i++;
+        int i = 0;
+        boolean posible = true;
+        while(i < this.lista.verNumDatos() && posible){
+            if(this.lista.verArista(i).verN1() == nodo){
+                res.anadeArista(this.lista.verArista(i));
             }
+            posible = this.lista.verArista(i).verN1() < nodo;
         }
         return res;
     }
@@ -118,26 +107,10 @@ public class Grafo{
         }
         this.nodosTerminales = res;
     }
-    
-    public ListaNumeros alcanzablesDesde (int inicial){
-        ListaNumeros visitados = new ListaNumeros();
-        ListaNumeros alcanzables = new ListaNumeros();
-        alcanzables.anadir(inicial);
-        while(alcanzables.distinta(visitados)){
-            ListaNumeros aVisitar = alcanzables.diferencia(visitados);
-            visitados = new ListaNumeros(alcanzables);
-            int i = 0;
-            while(i < aVisitar.cuantos()){
-                alcanzables.anadir(this.alcanzablesInmediatos(aVisitar.ver(i)));
-                i++;
-            }
-        }
-        alcanzables.quitar(inicial);
-        return alcanzables;
-    }
 
 
-    public ListaNodos alcanzablesDesdeBis (int inicial){
+
+    public ListaNodos alcanzablesDesde (int inicial){
         ListaNumeros visitados = new ListaNumeros();
         ListaNodos alcanzables = new ListaNodos(this.numNodos);
         alcanzables.anadirNodo(new Nodo(inicial, 0, 0));
@@ -150,22 +123,6 @@ public class Grafo{
             }
         }
         alcanzables.quitar(new Nodo(inicial, 0, 0));
-
-    public ListaNodos alcanzablesDesdeBis (Nodo inicial){
-        ListaNodos visitados = new ListaNodos(this.numNodos);
-        ListaNodos alcanzables = new ListaNodos(this.numNodos);
-        alcanzables.anadirNodo(inicial);
-        while(alcanzables.distinta(visitados)){
-            ListaNodos aVisitar = alcanzables.diferencia(visitados);
-            visitados = new ListaNodos(alcanzables);
-            int i = 0;
-            while(i < aVisitar.cuantos()){
-                alcanzables.anadir(this.alcanzablesInmediatosBis(aVisitar.verNodo(i)));
-                i++;
-            }
-        }
-        alcanzables.quitar(inicial);
-
         return alcanzables;
     }
     
@@ -188,18 +145,6 @@ public class Grafo{
             for(int i = 0; i < subgrafo.verNumDatos(); i++){
                 res.anadirNodo(new Nodo(subgrafo.verArista(i).verN2(), nodo.verNumPasos() + 1,
                                    (subgrafo.verArista(i).verPeso() + nodo.verPesoAc())));
-            }
-        }
-        return res;
-    }
-    
-    public ListaNodos alcanzablesInmediatosBis (Nodo nodo){
-        ListaNodos res = new ListaNodos(this.numNodos);
-        if (!esTerminalBis(nodo)){
-            Grafo grafo = this.subgrafo(nodo.verIdent());
-            for(int i = 0; i < grafo.lista.verNumDatos(); i++){
-                res.anadirNodo(new Nodo(grafo.lista.verArista(i).verN2(),1,
-                grafo.lista.verArista(i).verPeso()));
             }
         }
         return res;
@@ -230,7 +175,7 @@ public class Grafo{
         PrintWriter g = null;
         Grafo subgrafo = null;
         int numNodosIguales, nodoAnt=0;
-        ListaNumeros nodosAlcanzables = null;
+        ListaNodos nodosAlcanzables = null;
         try{
             g= new PrintWriter(new File(nombre));
         }catch(FileNotFoundException fnfe){
@@ -245,9 +190,9 @@ public class Grafo{
                     nodosAlcanzables = this.alcanzablesDesde(nodoAnt);                    
                     
                     g.printf("NODO \t %\n", nodoAnt);
-                    for(int j=0; j<subgrafo.numNodos; j++){
-                        g.printf(Locale.ENGLISH, "%1d \t %2d \t %3$.3f \n"
-                        );
+                    for(int j=0; j < nodosAlcanzables.cuantos(); j++){
+                        g.printf(Locale.ENGLISH, "%1d \t %2d \t %3$.3f \n", 
+                        nodosAlcanzables.verNodo(j).toString());
                     }
                 }
             }

@@ -99,12 +99,6 @@ public class ListaNodos
         }
     }
     
-    public ListaNodos diferencia(ListaNodos otra){
-        ListaNodos res = new ListaNodos(this);
-        
-        return res;
-    }
-    
     private void quitar(ListaNodos otra){
         for(int i=0; i<otra.numNodos; i++){
             this.quitar(otra.nodos[i]);
@@ -144,60 +138,6 @@ public class ListaNodos
         this.numNodos --;
     }
     
-    
-    /*
-     * pendiente de borrar, pero me da pereza :v
-     */
-
-        
-    
-    
-    public boolean distinta (ListaNodos otra){
-        if(this.numNodos != otra.numNodos){
-            return true;
-        }else{
-            boolean distinto = false;
-            int carro = 0;
-            while(!distinto && carro < this.numNodos){
-                distinto = !this.nodos[carro].igualA(otra.nodos[carro]); 
-                carro ++;
-            }
-            return distinto;
-        }
-    }
-    
-    public ListaNodos diferencia(ListaNodos otra){
-        ListaNodos res = new ListaNodos(this);
-        
-        return res;
-    }
-    
-    private void quitar(ListaNodos otra){
-        for(int i=0; i<otra.numNodos; i++){
-            this.quitar(otra.nodos[i]);
-        }
-    }
-    
-    public void quitar(Nodo nod){
-        boolean encontrado = false;
-        int carro = -1;
-        while (!encontrado && carro < this.numNodos){
-            carro ++;
-            encontrado = this.nodos[carro].igualA(nod);
-        }
-        if(encontrado){
-            this.quitaPos(carro);
-        }
-    }
-    
-    private void quitaPos (int n){
-        for(int i = n; i < this.numNodos; i++){
-                this.nodos [i] = this.nodos [i + 1];
-        }
-        this.numNodos --;
-    }
-    
-
     public static ListaNodos nodosAlcanzablesDesde(int nodo, int numDatos,
     ListaAristas lista){
         int i=0, posIn=lista.verPosNodo(nodo);
