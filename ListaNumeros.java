@@ -36,6 +36,9 @@ public class ListaNumeros
         }
     }
     
+    /**
+     * Fusion
+     */
     public void anadir (ListaNumeros otra){
         if(this.distinta(otra)){
             for(int i = 0; i < otra.numElementos; i++){
@@ -48,7 +51,7 @@ public class ListaNumeros
         int pos = this.numElementos;
         this.numeros [pos] = n;
         boolean duplicado = false;
-        while(pos > 0 && !duplicado && this.numeros [pos - 1] >= n){
+        while(pos > 0 && !duplicado && this.numeros [pos - 1] > n){
             if (this.numeros [pos - 1] == n){
                 duplicado = true;
             }else{
@@ -82,13 +85,16 @@ public class ListaNumeros
         }
     }
     
+    /**
+     * Filtro
+     */
     public ListaNumeros diferencia (ListaNumeros otra){
         ListaNumeros res = new ListaNumeros(this);
         res.quitar(otra);
         return res;
     }
     
-    public void quitar (ListaNumeros otra){
+    private void quitar (ListaNumeros otra){
         for(int i = 0; i < otra.numElementos; i++){
             this.quitar(otra.numeros[i]);
         }
@@ -120,3 +126,9 @@ public class ListaNumeros
         }
     }
 }
+
+
+
+
+
+
