@@ -38,8 +38,10 @@ public class Nodo{
         return this.ident==nod.ident&&this.numPasos==nod.numPasos&&
         Math.abs(this.pesoAc-nod.pesoAc)<=1.0e-3;
     }
+
     
     public boolean igualA(int n){
         return this.ident == n;
     }
+
 }

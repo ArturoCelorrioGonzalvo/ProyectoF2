@@ -78,9 +78,15 @@ public class Grafo{
         }
     }
 
+
     public ListaAristas subgrafo (int nodo){
         int test=this.lista.verNodosInicioIguales(nodo) ;
         ListaAristas res = new ListaAristas (test);
+
+    public Grafo subgrafo (int nodo){
+        int test=this.lista.verNodosInicioIguales(nodo) ;
+        Grafo res = new Grafo (test);
+
         int pos = this.lista.busquedaPosDico(new Arista (nodo, 0, 0));
         int carro = 0;
         boolean otro = true;
@@ -130,6 +136,7 @@ public class Grafo{
         return alcanzables;
     }
 
+
     public ListaNodos alcanzablesDesdeBis (int inicial){
         ListaNumeros visitados = new ListaNumeros();
         ListaNodos alcanzables = new ListaNodos(this.numNodos);
@@ -143,6 +150,22 @@ public class Grafo{
             }
         }
         alcanzables.quitar(new Nodo(inicial, 0, 0));
+
+    public ListaNodos alcanzablesDesdeBis (Nodo inicial){
+        ListaNodos visitados = new ListaNodos(this.numNodos);
+        ListaNodos alcanzables = new ListaNodos(this.numNodos);
+        alcanzables.anadirNodo(inicial);
+        while(alcanzables.distinta(visitados)){
+            ListaNodos aVisitar = alcanzables.diferencia(visitados);
+            visitados = new ListaNodos(alcanzables);
+            int i = 0;
+            while(i < aVisitar.cuantos()){
+                alcanzables.anadir(this.alcanzablesInmediatosBis(aVisitar.verNodo(i)));
+                i++;
+            }
+        }
+        alcanzables.quitar(inicial);
+
         return alcanzables;
     }
     
@@ -165,6 +188,18 @@ public class Grafo{
             for(int i = 0; i < subgrafo.verNumDatos(); i++){
                 res.anadirNodo(new Nodo(subgrafo.verArista(i).verN2(), nodo.verNumPasos() + 1,
                                    (subgrafo.verArista(i).verPeso() + nodo.verPesoAc())));
+            }
+        }
+        return res;
+    }
+    
+    public ListaNodos alcanzablesInmediatosBis (Nodo nodo){
+        ListaNodos res = new ListaNodos(this.numNodos);
+        if (!esTerminalBis(nodo)){
+            Grafo grafo = this.subgrafo(nodo.verIdent());
+            for(int i = 0; i < grafo.lista.verNumDatos(); i++){
+                res.anadirNodo(new Nodo(grafo.lista.verArista(i).verN2(),1,
+                grafo.lista.verArista(i).verPeso()));
             }
         }
         return res;
