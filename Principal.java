@@ -121,6 +121,13 @@ public class Principal{
                         subgrafo = trabajo.subgrafo(nodo);
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
+                case 13:
+                    System.out.println("Aún por hacer");
+                    break;
+                case 14:
+                    if(trabajo!=null){
+                        memoria= new Grafo(trabajo);
+                    }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
             }
         }
     }
