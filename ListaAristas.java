@@ -57,6 +57,49 @@ public class ListaAristas{
         res.ordenarLista();
         return res;
     }
+    
+    public ListaAristas (int n, String nombre){
+        this.aristas = new Arista [50];
+        Scanner f = null;
+        int nodoActual = 5555, lineaInt = 0;
+        try{
+            f = new Scanner (new File (nombre));
+        }catch(FileNotFoundException fnfe){
+            System.out.printf("%s \n", fnfe.getMessage());
+        }
+        if (f != null){
+            while(f.hasNextLine()){
+                Scanner linea = new Scanner (f.nextLine());
+                lineaInt ++; 
+                if(!linea.hasNextInt()){
+                    while(!linea.hasNextInt() && linea.hasNext()){
+                        String basura = linea.next();
+                    }
+                    if(linea.hasNextInt()){
+                        nodoActual = linea.nextInt();
+                    }else{
+                        System.out.println("linea de datos basura." +
+                            " La linea " + lineaInt + " va ha ser omitida");
+                    }
+                }else{
+                    try{
+                        int nodoFinal = linea.nextInt();
+                        int pasos = linea.nextInt(); //a merter en try catch o reforzar
+                        double peso = linea.nextDouble();
+                        if (pasos == 1){
+                            this.anadeArista(new Arista (nodoActual,nodoFinal, peso));
+                        }
+                    }catch(InputMismatchException e){
+                        System.out.println("Ha ocurrido un error en la lectura" +
+                            " del archivo, se omitira la linea "
+                            + lineaInt + " del archivo");
+                    }
+                }
+            }
+            this.ordenarLista();
+            f.close();
+        }
+    }
 
     /**
      * Métodos diversos con observadores y modificadores
@@ -186,7 +229,40 @@ public class ListaAristas{
                 this.aristas[i] = ar;
                 this.numDatos ++;
             }
+        }else{
+            this.amplia();
+            i = 0;
+            s = this.numDatos-1;
+            while(i != s){
+                m = ( i + s ) / 2 ;
+                if (this.aristas[m].ordenadoRespA(ar)){
+                    s = m;
+                }else{
+                    i = m + 1;
+                }
+            }
+            if ((this.aristas[i] != null)){
+                if(!this.aristas[i].igualA(ar)){
+                    this.hazHueco(i);
+                    this.aristas[i] = ar;
+                    this.numDatos ++;
+                }else{
+                    System.out.println("se han encontrado 2 aristas iguales, la mas reciente "+
+                        "se ignorará");
+                }
+            }else {
+                this.aristas[i] = ar;
+                this.numDatos ++;
+            }
         }
+    }
+    
+    public void amplia (){
+        Arista [] nuevo = new Arista [this.aristas.length + 50];
+        for(int i = 0; i < this.aristas.length; i++){
+            nuevo[i] = this.aristas[i];
+        }
+        this.aristas = nuevo;
     }
 
     /**

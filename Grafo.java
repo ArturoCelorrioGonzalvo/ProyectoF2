@@ -25,59 +25,22 @@ public class Grafo{
         this.nodosTerminales=new ListaNumeros(gr.nodosTerminales);
     }
     
-    public Grafo (int n, String nombre){
-        this.lista = new ListaAristas (n);
-        this.nodosTerminales = new ListaNumeros ();
-        Scanner f = null;
-        int nodoActual = 5555, lineaInt = 0, aristasSalen = 0;
-        try{
-            f = new Scanner (new File (nombre));
-        }catch(FileNotFoundException fnfe){
-            System.out.printf("%s \n", fnfe.getMessage());
-        }
-        if (f != null){
-            while(f.hasNextLine()){
-                Scanner linea = new Scanner (f.nextLine());
-                lineaInt ++; 
-                if(!linea.hasNextInt()){
-                    while(!linea.hasNextInt() && linea.hasNext()){
-                        String basura = linea.next();
-                    }
-                    if(linea.hasNextInt()){
-                        if(aristasSalen == 0){
-                            nodosTerminales.anadir(nodoActual);
-                        }
-                        nodoActual = linea.nextInt();
-                        this.numNodos ++;
-                        aristasSalen = 0;
-                    }else{
-                        System.out.println("linea de datos basura." +
-                            " La linea " + lineaInt + " va ha ser omitida");
-                    }
-                }else{
-                    try{
-                        int nodoFinal = linea.nextInt();
-                        int pasos = linea.nextInt(); //a merter en try catch o reforzar
-                        double peso = linea.nextDouble();
-                        if (pasos == 1){
-                            this.lista.anadeArista(new Arista (nodoActual,
-                                    nodoFinal,
-                                    peso));
-                            aristasSalen ++;
-                        }
-                    }catch(InputMismatchException e){
-                        System.out.println("Ha ocurrido un error en la lectura" +
-                            " del archivo, se omitira la linea "
-                            + lineaInt + " del archivo");
-                    }
+    public ListaNumeros terminales (){
+        ListaNumeros res = new ListaNumeros();
+        int ant, act = 0;
+        for(int i = 0; i < this.lista.verNumDatos(); i++){
+            ant = act;
+            act = this.lista.verArista(i).verN1();
+            if (act - ant > 1){
+                for(int j = 1; j < act - ant; j++){
+                    res.anadir(ant + j);
                 }
             }
-            this.lista.ordenarLista();
-            this.verificaTerminales();
-            f.close();
         }
+        this.nodosTerminales = res;
+        this.verificaTerminales();
+        return this.nodosTerminales;
     }
-
 
     public ListaAristas subgrafo (int nodo){
         int test=this.lista.verNodosInicioIguales(nodo) ;
@@ -108,7 +71,28 @@ public class Grafo{
         this.nodosTerminales = res;
     }
 
-
+    public ListaNodos alcanzablesDesdeConMinPeso (int inicial){
+        ListaNodos alcanzables = new ListaNodos(this.numNodos);
+        ListaNodos nuevos = new ListaNodos(this.numNodos);
+        nuevos.anadirNodo(new Nodo(inicial, 0, 0));
+        boolean actualizado = true;
+        while(actualizado){
+            actualizado = false;
+            ListaNodos creados = new ListaNodos(this.numNodos);
+            for(int i = 0; i < nuevos.cuantos(); i++){
+                ListaNodos actuales = alcanzablesInmediatos(nuevos.verNodo(i));
+                for(int j = 0; j < actuales.cuantos(); j++){
+                    boolean anadido = alcanzables.anadirPeso(actuales.verNodo(j));
+                    actualizado = actualizado || anadido;
+                    if (anadido){
+                        creados.anadirPeso(actuales.verNodo(j));
+                    }
+                }
+            }
+            nuevos = creados;
+        }
+        return alcanzables;
+    }
 
     public ListaNodos alcanzablesDesde (int inicial){
         ListaNumeros visitados = new ListaNumeros();

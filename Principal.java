@@ -31,7 +31,7 @@ public class Principal{
             System.out.println("17. Salir del programa");
             do{
                 seleccion=Teclado.leerEntero("Elige un número del 1 al 17 para "+
-                    " seleccionar lo que quieras hacer");
+                    "seleccionar lo que quieras hacer");
             }while(seleccion<1||seleccion>17);
 
             switch(seleccion){
