@@ -26,19 +26,14 @@ public class Grafo{
     }
     
     public ListaNumeros terminales (){
-        ListaNumeros res = new ListaNumeros();
-        int ant, act = 0;
+        ListaNumeros salen = new ListaNumeros();
+        ListaNumeros entran = new ListaNumeros();
         for(int i = 0; i < this.lista.verNumDatos(); i++){
-            ant = act;
-            act = this.lista.verArista(i).verN1();
-            if (act - ant > 1){
-                for(int j = 1; j < act - ant; j++){
-                    res.anadir(ant + j);
-                }
-            }
+            salen.anadeSinRep(this.lista.verArista(i).verN1());
+            entran.anadeSinRep(this.lista.verArista(i).verN1());
         }
-        this.nodosTerminales = res;
-        this.verificaTerminales();
+        entran.quitar(salen);
+        this.nodosTerminales = entran;
         return this.nodosTerminales;
     }
 

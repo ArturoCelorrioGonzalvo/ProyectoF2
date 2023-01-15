@@ -122,6 +122,14 @@ public class Principal{
                         subgrafo = trabajo.subgrafo(nodo);
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
+                case 13:
+                    if(trabajo != null){
+                        int nodo;
+                        do nodo=Teclado.leerEntero("¿Nodo?");
+                        while(nodo<1);
+                        trabajo.alcanzablesDesde(nodo).escribirLista();
+                    }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
+                    break;
             }
         }
     }
