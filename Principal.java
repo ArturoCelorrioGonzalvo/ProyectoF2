@@ -8,7 +8,10 @@
 public class Principal{
 
     public static void main(String [] args){
+<<<<<<< HEAD
 
+=======
+>>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
         Grafo memoria=null, trabajo=null;
         ListaAristas subgrafo=null;
         int seleccion=0;
@@ -32,7 +35,11 @@ public class Principal{
             System.out.println("17. Salir del programa");
             do{
                 seleccion=Teclado.leerEntero("Elige un número del 1 al 17 para "+
+<<<<<<< HEAD
                     " seleccionar lo que quieras hacer");
+=======
+                    "seleccionar lo que quieras hacer");
+>>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
             }while(seleccion<1||seleccion>17);
 
             switch(seleccion){
@@ -124,13 +131,19 @@ public class Principal{
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 13:
-                    System.out.println("Aún por hacer");
-                    break;
-                case 14:
-                    if(trabajo!=null){
-                        memoria= new Grafo(trabajo);
+                    if(trabajo != null){
+                        int nodo;
+                        do nodo=Teclado.leerEntero("¿Nodo?");
+                        while(nodo<1);
+                        trabajo.alcanzablesDesde(nodo).escribirLista();
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
+<<<<<<< HEAD
+=======
+                    break;
+>>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
             }
         }
     }
 }
+
+

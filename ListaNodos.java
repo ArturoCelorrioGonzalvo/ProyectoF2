@@ -14,16 +14,16 @@ public class ListaNodos
         this.nodos = new Nodo [n];
         this.numNodos = 0;
     }
-    
+
     public ListaNodos(ListaNodos lista){
         this.nodos = lista.nodos;
         this.numNodos = lista.numNodos;
     }
-    
+
     public int ver (int n){
         return this.nodos[n].verIdent();
     }
-    
+
     public Nodo verNodo(int n){
         return this.nodos[n];
     }
@@ -36,7 +36,7 @@ public class ListaNodos
         this.nodos[numNodos] = new Nodo(n);
         this.numNodos ++;
     }
-    
+
     public void anadir(ListaNodos lista){
 
         //suponiendo que haya hueco
@@ -62,15 +62,42 @@ public class ListaNodos
             }
         }
     }
+
+    public boolean anadirPeso (Nodo nodo){
+        //suponiendo que haya hueco
+        boolean anadido = false, posible = true;
+        int i = 0;
+        while(posible && i < this.numNodos){
+            if (this.nodos[i].verIdent() == nodo.verIdent()){
+                if(this.nodos[i].verPesoAc() == nodo.verPesoAc()){
+                    if(this.nodos[i].verNumPasos() > nodo.verNumPasos()){
+                        this.nodos[i] = nodo;
+                        anadido = true;
+                    }
+                }else if(this.nodos[i].verPesoAc() > nodo.verPesoAc()){
+                    this.nodos[i] = nodo;
+                    anadido = true;
+                }
+                posible = false;
+            }else if(this.nodos[i].verIdent() > nodo.verIdent()){
+                posible = false;
+                anadido = true;
+                this.hazHueco(i);
+                this.nodos[i] = nodo;
+                this.numNodos ++;
+            }
+        }
+        return anadido;
+    }
     
-    private void hazHueco (int n){
+        private void hazHueco (int n){
         if (this.nodos.length > this.numNodos){
             for(int i = this.numNodos; i >= n; i--){
                 this.nodos[i+1] = this.nodos[i];
             }
         }
     }
-    
+
     public boolean distinta (ListaNodos otra){
         if(this.numNodos != otra.numNodos){
             return true;
@@ -84,7 +111,7 @@ public class ListaNodos
             return distinto;
         }
     }
-    
+
     public boolean distinta (ListaNumeros otra){
         if(this.numNodos != otra.cuantos()){
             return true;
@@ -98,19 +125,13 @@ public class ListaNodos
             return distinto;
         }
     }
-    
-    public ListaNodos diferencia(ListaNodos otra){
-        ListaNodos res = new ListaNodos(this);
-        
-        return res;
-    }
-    
+
     private void quitar(ListaNodos otra){
         for(int i=0; i<otra.numNodos; i++){
             this.quitar(otra.nodos[i]);
         }
     }
-    
+
     public void quitar(ListaNumeros otra){
         for(int i = 0; i < otra.cuantos(); i++){
             boolean quitado = false;
@@ -124,7 +145,7 @@ public class ListaNodos
             }
         }
     }
-    
+
     public void quitar(Nodo nod){
         boolean encontrado = false;
         int carro = -1;
@@ -136,10 +157,10 @@ public class ListaNodos
             this.quitaPos(carro);
         }
     }
-    
+
     private void quitaPos (int n){
         for(int i = n; i < this.numNodos; i++){
-                this.nodos [i] = this.nodos [i + 1];
+            this.nodos [i] = this.nodos [i + 1];
         }
         this.numNodos --;
     }
@@ -200,7 +221,7 @@ public class ListaNodos
             }
         }
     }
-    
+
     private void ordenarLista(){
         Nodo apoyo;
         for(int i=1; i<this.numNodos; i++){

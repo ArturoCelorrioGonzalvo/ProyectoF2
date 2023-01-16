@@ -39,9 +39,15 @@ public class Nodo{
         Math.abs(this.pesoAc-nod.pesoAc)<=1.0e-3;
     }
 
+    public String toString (){
+        String res = "";
+        res = res + this.ident + "  ";
+        res = res + this.numPasos + "  ";
+        res = res + this.pesoAc + "  ";
+        return res;
+    }
     
     public boolean igualA(int n){
         return this.ident == n;
     }
-
 }

@@ -24,16 +24,24 @@ public class ListaNumeros
     }
     
     public void anadir (int n){
-        if(this.numElementos < this.numeros.length){
+        if(this.lleno()){
+            this.amplia();
             this.anadeOrdenado(n);
         }else{
-            int [] copia = new int [this.numeros.length + 10];
-            for(int i = 0; i < this.numElementos; i++){
-                copia [i] = this.numeros [i];
-            }
-            this.numeros = copia;
             this.anadeOrdenado(n);
         }
+    }
+    
+    private boolean lleno (){
+        return this.numElementos == this.numeros.length;
+    }
+    
+    private void amplia (){
+        int [] copia = new int [this.numeros.length + 10];
+        for(int i = 0; i < this.numElementos; i++){
+            copia [i] = this.numeros [i];
+        }
+        this.numeros = copia;
     }
     
     /**
@@ -66,6 +74,32 @@ public class ListaNumeros
         }
     }
     
+    public void anadeSinRep (int n){
+        int i = 0;
+        boolean puesto = false;
+        while(i < this.numElementos && !puesto){
+            puesto = this.numeros[i] == n;
+            if(this.numeros[i] > n){
+                this.hazHueco(i);
+                this.numeros[i] = n;
+                this.numElementos++;
+            }
+        }
+    }
+    
+    private void hazHueco (int n){
+        if(!this.lleno()){
+            for(int i = this.numElementos + 1; i > n; i--){
+                this.numeros[i] = this.numeros [i - 1];
+            }
+        }else{
+            this.amplia();
+            for(int i = this.numElementos + 1; i > n; i--){
+                this.numeros[i] = this.numeros [i - 1];
+            }
+        }
+    }
+    
     private void quitaPos (int n){
         for(int i = n; i < this.numElementos; i++){
                 this.numeros [i] = this.numeros [i + 1];
@@ -94,7 +128,7 @@ public class ListaNumeros
         return res;
     }
     
-    private void quitar (ListaNumeros otra){
+    public void quitar (ListaNumeros otra){
         for(int i = 0; i < otra.numElementos; i++){
             this.quitar(otra.numeros[i]);
         }
