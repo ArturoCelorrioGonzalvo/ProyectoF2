@@ -64,7 +64,7 @@ public class ListaAristas{
             this.aristas[i]=new Arista();
         }
         Scanner f = null;
-        int nodoActual = 5555, lineaInt = 0;
+        int nodoActual = 1, lineaInt = 0;
         try{
             f = new Scanner (new File (nombre));
         }catch(FileNotFoundException fnfe){
@@ -89,8 +89,12 @@ public class ListaAristas{
                         int nodoFinal = linea.nextInt();
                         int pasos = linea.nextInt(); //a merter en try catch o reforzar
                         double peso = linea.nextDouble();
-                        if (pasos == 1){
+                        if (pasos == 1 && nodoActual>0 && nodoFinal>0 && peso>0.0){
                             this.anadeArista(new Arista (nodoActual,nodoFinal, peso));
+                        }else{
+                            System.out.println("Ha ocurrido un error en la lectura" +
+                            " del archivo, se omitira la linea "
+                            + lineaInt + " del archivo");
                         }
                     }catch(InputMismatchException e){
                         System.out.println("Ha ocurrido un error en la lectura" +
@@ -102,6 +106,45 @@ public class ListaAristas{
             this.setNumDatos();
             f.close();
         }
+    }
+    
+    public static boolean esValido (String nombre){
+        Scanner f = null;
+        boolean valido = true;
+        int nodoActual = 1, lineaInt = 0;
+        try{
+            f = new Scanner (new File (nombre));
+        }catch(FileNotFoundException fnfe){
+            System.out.printf("%s \n", fnfe.getMessage());
+        }
+        if (f != null){
+            while(f.hasNextLine() && valido){
+                Scanner linea = new Scanner (f.nextLine());
+                lineaInt ++; 
+                if(!linea.hasNextInt()){
+                    String basura = linea.next();
+                    
+                    if(linea.hasNextInt()){
+                        nodoActual = linea.nextInt();
+                    }else{
+                        valido = false;
+                    }
+                }else{
+                    try{
+                        int nodoFinal = linea.nextInt();
+                        int pasos = linea.nextInt(); //a merter en try catch o reforzar
+                        double peso = linea.nextDouble();
+                        if(pasos <= 0 || peso <= 0.0 || nodoFinal <= 0 || nodoActual <= 0){
+                            valido = false;
+                        }
+                    }catch(InputMismatchException e){
+                        valido = false;
+                    }
+                }
+            }
+            f.close();
+        }
+        return valido;
     }
 
     /**
@@ -145,8 +188,6 @@ public class ListaAristas{
         }
         return res;
     }
-    
-    
 
     /**
      * Búsqueda dicotómica de la posición de la primera aparición 
@@ -229,7 +270,7 @@ public class ListaAristas{
             }else{
                 int i = this.numDatos-1;
                 int posTeorica = this.busquedaPosDico(ar);
-                if(posTeorica!=-1&&this.aristas[posTeorica].verPeso()>ar.verPeso()){
+                if(posTeorica!=-1&&this.aristas[posTeorica].verPeso()>=ar.verPeso()){
                     this.aristas[posTeorica]=new Arista(ar);
                 }else{
                     while(i>=0 && !this.aristas[i].ordenadoRespA(ar)){
@@ -368,5 +409,33 @@ public class ListaAristas{
                 this.aristas[i]=this.aristas[i+1];
             this.numDatos--;
         }
+    }
+
+    
+    public ListaAristas fusion(ListaAristas otra){
+        ListaAristas res = new ListaAristas(this.numDatos+otra.numDatos);
+        
+        int i=0, j=0;
+
+        while(i<this.numDatos&&j<otra.numDatos){
+            
+            if(this.aristas[i].ordenadoRespA(otra.aristas[j])){
+                res.anadeArista(this.aristas[i]);
+                i++;
+            }else{
+                res.anadeArista(otra.aristas[j]);
+                j++;
+            }
+        }
+
+        for(int l=j; l<otra.numDatos; l++){
+            res.anadeArista(otra.aristas[l]);
+        }
+
+        for(int m=i; m<this.numDatos; m++){
+            res.anadeArista(this.aristas[m]);
+        }
+
+        return res;
     }
 }

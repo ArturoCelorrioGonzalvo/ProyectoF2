@@ -16,6 +16,12 @@ public class Nodo{
         this.pesoAc=pes;
     }
     
+    public Nodo(){
+        this.ident=0;
+        this.numPasos=0;
+        this.pesoAc=0.0;
+    }
+    
     public Nodo(Nodo n){
         this.ident=n.ident;
         this.numPasos=n.numPasos;
@@ -39,12 +45,14 @@ public class Nodo{
         Math.abs(this.pesoAc-nod.pesoAc)<=1.0e-3;
     }
 
-    public String toString (){
-        String res = "";
-        res = res + this.ident + "  ";
-        res = res + this.numPasos + "  ";
-        res = res + this.pesoAc + "  ";
-        return res;
+    public boolean ordenadoRespA(Nodo nod){
+        return this.anteriorA(nod)||this.igualA(nod);
+    }
+    
+    public boolean anteriorA(Nodo nod){
+        return this.ident<nod.ident||(this.ident==nod.ident&&
+        this.numPasos<nod.numPasos)||(this.numPasos==nod.numPasos&&
+        this.pesoAc<nod.pesoAc);
     }
     
     public boolean igualA(int n){

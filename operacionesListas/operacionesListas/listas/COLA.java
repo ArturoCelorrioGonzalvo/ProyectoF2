@@ -4,6 +4,7 @@ package listas;
 /**
  * Write a description of class COLA here.
  * Primer dato en entrar y primero en salir
+ * FIFO
  * @author (your name) 
  * @version (a version number or a date)
  */

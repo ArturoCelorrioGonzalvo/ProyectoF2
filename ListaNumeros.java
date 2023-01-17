@@ -186,7 +186,7 @@ public class ListaNumeros
     }
 
     public int ver(int pos){
-        if (this.numElementos >= pos){
+        if (pos>=0&&pos<this.numElementos){
             return this.numeros[pos];
         }else{
             return -1;

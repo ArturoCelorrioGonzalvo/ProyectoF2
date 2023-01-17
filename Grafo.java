@@ -66,15 +66,16 @@ public class Grafo{
     }
 
     public ListaAristas subgrafo (int nodo){
-        int test=this.lista.verNodosInicioIguales(nodo) ;
-        ListaAristas res = new ListaAristas (test);
+        
+        ListaAristas res = new ListaAristas (10);
         int i = 0;
         boolean posible = true;
         while(i < this.lista.verNumDatos() && posible){
             if(this.lista.verArista(i).verN1() == nodo){
                 res.anadeArista(this.lista.verArista(i));
             }
-            posible = this.lista.verArista(i).verN1() < nodo;
+            posible = this.lista.verArista(i).verN1() <= nodo;
+            i++;
         }
         return res;
     }
@@ -97,7 +98,7 @@ public class Grafo{
     public ListaNodos alcanzablesDesdeConMinPeso (int inicial){
         ListaNodos alcanzables = new ListaNodos(this.numNodos);
         ListaNodos nuevos = new ListaNodos(this.numNodos);
-        nuevos.anadirNodo(new Nodo(inicial, 0, 0));
+        nuevos.anadeNodo(new Nodo(inicial, 0, 0));
         boolean actualizado = true;
         while(actualizado){
             actualizado = false;
@@ -120,7 +121,7 @@ public class Grafo{
     public ListaNodos alcanzablesDesde (int inicial){
         ListaNumeros visitados = new ListaNumeros();
         ListaNodos alcanzables = new ListaNodos(this.numNodos);
-        alcanzables.anadirNodo(new Nodo(inicial, 0, 0));
+        alcanzables.anadeNodo(new Nodo(inicial, 0, 0));
         while(alcanzables.distinta(visitados)){
             ListaNodos aVisitar = new ListaNodos(alcanzables);
             aVisitar.quitar(visitados);
@@ -150,7 +151,7 @@ public class Grafo{
         if(!esTerminal(nodo.verIdent())){
             subgrafo = this.subgrafo(nodo.verIdent());
             for(int i = 0; i < subgrafo.verNumDatos(); i++){
-                res.anadirNodo(new Nodo(subgrafo.verArista(i).verN2(), nodo.verNumPasos() + 1,
+                res.anadeNodo(new Nodo(subgrafo.verArista(i).verN2(), nodo.verNumPasos() + 1,
                                    (subgrafo.verArista(i).verPeso() + nodo.verPesoAc())));
             }
         }
@@ -161,12 +162,33 @@ public class Grafo{
         boolean terminal = false;
         int i = 0;
         while (!terminal && i < this.nodosTerminales.cuantos()){
-            terminal = this.nodosTerminales.ver(i) == nodo; 
+            terminal = this.nodosTerminales.ver(i) == nodo;
+            i++;
         }
         return terminal;
     }
     
     public void generaFichero(String nombre){
+        PrintWriter g = null;
+        try{
+            g= new PrintWriter(new File(nombre));
+        }catch(FileNotFoundException fnfe){
+            System.out.printf("%s \n", fnfe.getMessage());
+        }catch(IOException ioe){
+            System.out.printf("%s \n", ioe.getMessage());
+        }
+        if(g!=null){
+            for(int i=0; i<this.lista.verNumDatos(); i++){
+                g.printf(Locale.ENGLISH, " %1d \t %2d \t %3$.3f \n",
+                        this.lista.verArista(i).verN1(),
+                        this.lista.verArista(i).verN2(),
+                        this.lista.verArista(i).verPeso());
+            }
+            g.close();
+        }
+    }
+    
+    public void generaFicheroAlcanzables(String nombre){
         PrintWriter g = null;
         Grafo subgrafo = null;
         int numNodosIguales, nodoAnt=0;
@@ -185,7 +207,10 @@ public class Grafo{
                     nodosAlcanzables = this.alcanzablesDesde(nodoAnt);                    
                     g.printf("NODO \t %\n", nodoAnt);
                     for(int j=0; j < nodosAlcanzables.cuantos(); j++){
-                        g.println(nodosAlcanzables.verNodo(j).toString());
+                        g.printf(Locale.ENGLISH, " %1d \t %2d \t %3$.3f \n",
+                        nodosAlcanzables.verNodo(j).verIdent(),
+                        nodosAlcanzables.verNodo(j).verNumPasos(),
+                        nodosAlcanzables.verNodo(j).verPesoAc());
                     }
                 }
             }
@@ -234,8 +259,13 @@ public class Grafo{
         return this.lista.verNumDatos();
     }
     
-    public void modificarPesoArista(Arista ar){
-        
+    public void modificarPesoArista(Arista ar, double peso){
+        int pos = this.lista.busquedaPosDico(ar);
+        if(pos!=-1){
+            this.lista.verArista(pos).setPeso(peso);
+        }else{
+            System.out.println("Esa arista no pertenece al grafo");
+        }
     }
     
     public int gradoNodo(int nodo){
@@ -260,9 +290,7 @@ public class Grafo{
     
     public void fusiona(Grafo gr){
         if(this.distinto(gr)){
-            for(int i=0; i<gr.lista.verNumDatos();i++){
-                this.lista.anadeArista(gr.lista.verArista(i));
-            }
+            this.lista=this.lista.fusion(gr.lista);
         }
     }
     

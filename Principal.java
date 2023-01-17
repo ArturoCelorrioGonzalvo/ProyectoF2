@@ -10,8 +10,11 @@ public class Principal{
     public static void main(String [] args){
         Grafo memoria=null, trabajo=null;
         ListaAristas subgrafo=null;
+        ListaNodos alcanzables=null;
         int seleccion=0;
         while(seleccion!=17){
+            //Podría poner un while(true) y cuando seleccionara el 17 poner un
+            //break, pero eso significaría un 0 por lo que lo he camuflado :)
             System.out.println("1. Iniciar un nuevo grafo");
             System.out.println("2. Añadir una nueva arista al grafo");
             System.out.println("3. Quitar una arista del grafo");
@@ -28,9 +31,10 @@ public class Principal{
             System.out.println("14. Guardar el grafo trabajo");
             System.out.println("15. Crear un nuevo grafo a partir de un archivo");
             System.out.println("16. Crear un nuevo archivo a partir del grafo memoria");
-            System.out.println("17. Salir del programa");
+            System.out.println("17. Crear un nuevo archivo con los nodos alcanzables desde cada nodo");
+            System.out.println("18. Salir del programa");
             do{
-                seleccion=Teclado.leerEntero("Elige un número del 1 al 17 para "+
+                seleccion=Teclado.leerEntero("Elige un número del 1 al 18 para "+
                     "seleccionar lo que quieras hacer \n");
             }while(seleccion<1||seleccion>17);
 
@@ -92,7 +96,8 @@ public class Principal{
                         while(n1<1);
                         do n2=Teclado.leerEntero("¿Nodo final?");
                         while(n2<1);
-                        trabajo.modificarPesoArista(new Arista(n1,n2,0.0));
+                        double peso = Teclado.leerReal("¿Peso?");
+                        trabajo.modificarPesoArista(new Arista(n1,n2,0.0), peso);
                         
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
@@ -116,10 +121,10 @@ public class Principal{
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 10:
-                    if(trabajo!=null){
+                    if(trabajo!=null&&memoria!=null){
                         trabajo.fusiona(memoria);
                         trabajo.verificaTerminales();
-                    }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
+                    }else System.out.println("El grafo de trabajo o memoria no están iniciados, inícialos y vuelve a intentarlo");
                     break;
                 case 11:
                     if(trabajo!=null && memoria!=null){
@@ -135,6 +140,7 @@ public class Principal{
                         do nodo=Teclado.leerEntero("¿Nodo?");
                         while(nodo<1);
                         subgrafo = trabajo.subgrafo(nodo);
+                        subgrafo.escribirLista();
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 13:
@@ -142,7 +148,8 @@ public class Principal{
                         int nodo;
                         do nodo=Teclado.leerEntero("¿Nodo?");
                         while(nodo<1);
-                        trabajo.alcanzablesDesde(nodo).escribirLista();
+                        alcanzables=trabajo.alcanzablesDesde(nodo);
+                        alcanzables.escribirLista();
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 14:
@@ -161,6 +168,11 @@ public class Principal{
                     }else System.out.println("El grafo de memoria no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 17:
+                    if(trabajo!=null){
+                        String nombreSalida = Teclado.leerCadena("¿Nombre de archivo?");
+                        trabajo.generaFicheroAlcanzables(nombreSalida);
+                    }
+                case 18:
                     System.out.println("Has salido del programa");
                     break;
             }

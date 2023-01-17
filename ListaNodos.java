@@ -12,6 +12,9 @@ public class ListaNodos
 
     public ListaNodos(int n){
         this.nodos = new Nodo [n];
+        for(int i=0; i<n; i++){
+            this.nodos[i]=new Nodo();
+        }
         this.numNodos = 0;
     }
 
@@ -32,11 +35,47 @@ public class ListaNodos
         return this.numNodos;
     }
 
-    public void anadirNodo(Nodo n){
-        this.nodos[numNodos] = new Nodo(n);
-        this.numNodos ++;
+    public void anadeNodo(Nodo n){
+        if(this.numNodos!=this.nodos.length){
+            if(this.numNodos==0){
+                this.nodos[0]=new Nodo(n);
+                this.numNodos++;
+            }else{
+                int i = this.numNodos-1;
+                int posTeorica = this.busquedaPosDico(n);
+                if(posTeorica!=-1&&this.nodos[posTeorica].verPesoAc()>=n.verPesoAc()){
+                    this.nodos[posTeorica]=new Nodo(n);
+                }else{
+                    while(i>=0 && !this.nodos[i].ordenadoRespA(n)){
+                        this.nodos[i+1]=this.nodos[i];
+                        i=i-1;
+                    }
+                    this.nodos[i+1]=new Nodo(n);
+                    this.numNodos++;   
+                }
+            }
+        }else{
+            this.amplia();
+            if(this.numNodos==0){
+                this.nodos[0]=new Nodo(n);
+                this.numNodos++;
+            }else{
+                int i = this.numNodos-1;
+                int posTeorica = this.busquedaPosDico(n);
+                if(posTeorica!=-1&&this.nodos[posTeorica].verPesoAc()>=n.verPesoAc()){
+                    this.nodos[posTeorica]=new Nodo(n);
+                }else{
+                    while(i>=0 && !this.nodos[i].ordenadoRespA(n)){
+                        this.nodos[i+1]=this.nodos[i];
+                        i=i-1;
+                    }
+                    this.nodos[i+1]=new Nodo(n);
+                    this.numNodos++;   
+                }
+            }
+        }
     }
-    
+
     public void amplia(){
         Nodo [] copia = new Nodo [this.nodos.length + 10];
         for(int i = 0; i < this.numNodos; i++){
@@ -67,8 +106,35 @@ public class ListaNodos
                     this.nodos[j] = lista.nodos[i];
                     this.numNodos ++;
                 }
+                j++;
             }
         }
+    }
+    
+    public ListaNodos fusion(ListaNodos otra){
+        ListaNodos res = new ListaNodos(this.numNodos+otra.numNodos);
+        int i=0, j=0;
+
+        while(i<this.numNodos&&j<otra.numNodos){
+            
+            if(this.nodos[i].ordenadoRespA(otra.nodos[j])){
+                res.anadeNodo(this.nodos[i]);
+                i++;
+            }else{
+                res.anadeNodo(otra.nodos[j]);
+                j++;
+            }
+        }
+
+        for(int l=j; l<otra.numNodos; l++){
+            res.anadeNodo(otra.nodos[l]);
+        }
+
+        for(int m=i; m<this.numNodos; m++){
+            res.anadeNodo(this.nodos[m]);
+        }
+
+        return res;
     }
 
     public boolean anadirPeso (Nodo nodo){
@@ -97,8 +163,8 @@ public class ListaNodos
         }
         return anadido;
     }
-    
-        private void hazHueco (int n){
+
+    private void hazHueco (int n){
         if (this.nodos.length > this.numNodos){
             for(int i = this.numNodos; i >= n; i--){
                 this.nodos[i+1] = this.nodos[i];
@@ -123,6 +189,8 @@ public class ListaNodos
     public boolean distinta (ListaNumeros otra){
         if(this.numNodos != otra.cuantos()){
             return true;
+        }else if(this.numNodos==otra.cuantos()&&this.numNodos==0){
+            return false;
         }else{
             boolean distinto = false;
             int carro = 0;
@@ -155,15 +223,7 @@ public class ListaNodos
     }
 
     public void quitar(Nodo nod){
-        boolean encontrado = false;
-        int carro = -1;
-        while (!encontrado && carro < this.numNodos){
-            carro ++;
-            encontrado = this.nodos[carro].igualA(nod);
-        }
-        if(encontrado){
-            this.quitaPos(carro);
-        }
+        int pos = this.busquedaPosDico(nod);
     }
 
     private void quitaPos (int n){
@@ -178,16 +238,15 @@ public class ListaNodos
      */
     public void escribirLista(){
         for(int i=0; i<this.numNodos; i++){
-            if(this.nodos[i]!=null){
-                System.out.printf(Locale.ENGLISH,
-                    "El nodo alcanzado es: %d\n La trayectoria es de: %d unidades\n El peso acumulado es: %.3f\n"
-                , this.nodos[i].verIdent(), this.nodos[i].verNumPasos(), 
-                    this.nodos[i].verPesoAc());
-            }
+            System.out.printf(Locale.ENGLISH,
+                "El nodo alcanzado es: %1d \t La trayectoria es de: %2d unidades \t El peso acumulado es: %3$.3f \n",
+                this.nodos[i].verIdent(),
+                this.nodos[i].verNumPasos(), 
+                this.nodos[i].verPesoAc());
         }
     }
 
-    private void ordenarLista(){
+    public void ordenarLista(){
         Nodo apoyo;
         for(int i=1; i<this.numNodos; i++){
             apoyo=this.nodos[i];
@@ -199,4 +258,26 @@ public class ListaNodos
             this.nodos[j]=apoyo;
         }
     }
+
+    public int busquedaPosDico(Nodo nodo){
+        int indice = -1;
+        int i, m, s;
+
+        if (this.numNodos!=0) {
+            i = 0 ;
+            s = this.numNodos - 1;
+            while (i != s) {
+                m = ( i + s ) / 2 ;
+                if (nodo.ordenadoRespA(this.nodos[m]))
+                    s = m ;
+                else
+                    i = m + 1 ;
+            }
+            if (nodo.igualA(this.nodos[i].verIdent()))
+                indice = i ;
+        }
+
+        return indice;
+    }
+
 }
