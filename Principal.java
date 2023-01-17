@@ -92,7 +92,7 @@ public class Principal{
                         while(n1<1);
                         do n2=Teclado.leerEntero("¿Nodo final?");
                         while(n2<1);
-                        int pos = trabajo.modificarPesoArista(new Arista(n1,n2,0.0));
+                        trabajo.modificarPesoArista(new Arista(n1,n2,0.0));
                         
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
