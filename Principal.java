@@ -8,10 +8,6 @@
 public class Principal{
 
     public static void main(String [] args){
-<<<<<<< HEAD
-
-=======
->>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
         Grafo memoria=null, trabajo=null;
         ListaAristas subgrafo=null;
         int seleccion=0;
@@ -35,11 +31,7 @@ public class Principal{
             System.out.println("17. Salir del programa");
             do{
                 seleccion=Teclado.leerEntero("Elige un número del 1 al 17 para "+
-<<<<<<< HEAD
-                    " seleccionar lo que quieras hacer");
-=======
-                    "seleccionar lo que quieras hacer");
->>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
+                    "seleccionar lo que quieras hacer \n");
             }while(seleccion<1||seleccion>17);
 
             switch(seleccion){
@@ -49,8 +41,12 @@ public class Principal{
                         do seg = Teclado.leerCaracter("El grafo trabajo ya está"+
                             " inicializado, ¿quieres volver a crearlo?");
                         while(seg!='s'&&seg!='S'&&seg!='n'&&seg!='N');
-                        if(seg=='s'||seg=='S')memoria=new Grafo(trabajo);
-
+                        if(seg=='s'||seg=='S'){
+                            memoria=new Grafo(trabajo);
+                            trabajo=null;
+                        }
+                        String nombreArchivoEntrada = Teclado.leerCadena("¿Nombre del archivo?");
+                        trabajo = new Grafo(nombreArchivoEntrada);
                     }else{
                         int numMax;
                         do numMax=Teclado.leerEntero("¿Número máximo de aristas? (<1000)");
@@ -59,13 +55,17 @@ public class Principal{
                     }
                     break;
                 case 2:
-                    if(trabajo!=null)
+                    if(trabajo!=null){
                         trabajo.anadeArista();
+                        trabajo.verificaTerminales();
+                    }
                     else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 3:
-                    if(trabajo!=null)
+                    if(trabajo!=null){
                         trabajo.quitaArista();
+                        trabajo.verificaTerminales();
+                    }
                     else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 4: 
@@ -87,16 +87,19 @@ public class Principal{
                     break;
                 case 6:
                     if(trabajo!=null){
-                        int pos;
-                        do pos = Teclado.leerEntero("¿De qué arista quieres modificar el peso? Número entre 1 y "+trabajo.verNumAristas());
-                        while(pos<1||pos>trabajo.verNumAristas());
-                        pos-=1;
-                        double peso=Teclado.leerReal("¿Cuál es el nuevo peso?");
-                        trabajo.modificarPesoArista(pos, peso);
+                        int n1, n2;
+                        do n1=Teclado.leerEntero("¿Nodo inicial?");
+                        while(n1<1);
+                        do n2=Teclado.leerEntero("¿Nodo final?");
+                        while(n2<1);
+                        int pos = trabajo.modificarPesoArista(new Arista(n1,n2,0.0));
+                        
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 7:
-                    System.out.println("Aún por hacer");
+                    if(trabajo!=null){
+                        System.out.println(trabajo.verNumBucles());
+                    }else System.out.println("El grafo de trabajo no está iniciado");
                     break;
                 case 8:
                     if(trabajo!=null){
@@ -113,13 +116,17 @@ public class Principal{
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 10:
-                    System.out.println("Aún por hacer");
+                    if(trabajo!=null){
+                        trabajo.fusiona(memoria);
+                        trabajo.verificaTerminales();
+                    }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
                     break;
                 case 11:
                     if(trabajo!=null && memoria!=null){
                         Grafo apoyo = new Grafo (memoria);
                         memoria = new Grafo (trabajo);
                         trabajo = new Grafo (apoyo);
+                        trabajo.verificaTerminales();
                     }else System.out.println("El grafo de trabajo y el de memoria no están iniciados, inícialos y vuelve a intentarlo");
                     break;
                 case 12:
@@ -137,11 +144,27 @@ public class Principal{
                         while(nodo<1);
                         trabajo.alcanzablesDesde(nodo).escribirLista();
                     }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
-<<<<<<< HEAD
-=======
                     break;
->>>>>>> 323126c4995e6749b62f13286638a4eb158dc7eb
+                case 14:
+                    if(trabajo!=null){
+                        memoria = new Grafo(trabajo);
+                    }else System.out.println("El grafo de trabajo no está iniciado, inícialo y vuelve a intentarlo");
+                    break;
+                case 15:
+                    String nombreArchivoEntrada = Teclado.leerCadena("¿Nombre del archivo?");
+                    trabajo = new Grafo(nombreArchivoEntrada);
+                    break;
+                case 16:
+                    if(memoria!=null){
+                        String nombreArchivoSalida = Teclado.leerCadena("¿Nombre del archivo?");
+                        memoria.generaFichero(nombreArchivoSalida);
+                    }else System.out.println("El grafo de memoria no está iniciado, inícialo y vuelve a intentarlo");
+                    break;
+                case 17:
+                    System.out.println("Has salido del programa");
+                    break;
             }
+            System.out.println();
         }
     }
 }

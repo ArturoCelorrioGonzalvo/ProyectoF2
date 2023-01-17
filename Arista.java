@@ -59,6 +59,9 @@ public class Arista
         this.peso=p;
     }
     
+    public boolean aristaVacia(){
+        return this.nodo1==0&&this.nodo2==0;
+    }
 
     /**
      * Metodo para incializar una arista
@@ -81,12 +84,12 @@ public class Arista
     }
 
     public boolean anteriorA(Arista ar){
-        return this.verN1()<ar.verN1()||this.verN1()==ar.verN1()&&
-        this.verN2()<ar.verN2();
+        return this.verN1()<ar.verN1()||(this.verN1()==ar.verN1()&&
+        this.verN2()<ar.verN2());
     }
 
     public boolean igualA(Arista ar){
-        return this.nodo1 ==ar.nodo1 && this.nodo2 == ar.nodo2;
+        return this.nodo1==ar.nodo1 && this.nodo2 == ar.nodo2;
     }
     
     public boolean ordenadoRespA(Arista ar){

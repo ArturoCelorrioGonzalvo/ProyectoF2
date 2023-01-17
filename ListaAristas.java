@@ -21,7 +21,7 @@ public class ListaAristas{
         }
         this.numDatos=0;
     }
-    
+
     public ListaAristas(ListaAristas lista){
         this.aristas=new Arista[lista.aristas.length];
         for(int i=0; i<lista.numDatos; i++){
@@ -29,7 +29,7 @@ public class ListaAristas{
         }
         this.numDatos=lista.numDatos;
     }
-    
+
     public static ListaAristas leerLista(){
         int n;
         ListaAristas res;
@@ -40,7 +40,7 @@ public class ListaAristas{
             res.numDatos+=1;
         }
         res.ordenarLista();
-        
+
         return res;
     }
 
@@ -57,9 +57,12 @@ public class ListaAristas{
         res.ordenarLista();
         return res;
     }
-    
-    public ListaAristas (int n, String nombre){
-        this.aristas = new Arista [50];
+
+    public ListaAristas (String nombre){
+        this.aristas = new Arista [20];
+        for(int i=0; i<20; i++){
+            this.aristas[i]=new Arista();
+        }
         Scanner f = null;
         int nodoActual = 5555, lineaInt = 0;
         try{
@@ -79,7 +82,7 @@ public class ListaAristas{
                         nodoActual = linea.nextInt();
                     }else{
                         System.out.println("linea de datos basura." +
-                            " La linea " + lineaInt + " va ha ser omitida");
+                            " La linea " + lineaInt + " va a ser omitida");
                     }
                 }else{
                     try{
@@ -96,7 +99,7 @@ public class ListaAristas{
                     }
                 }
             }
-            this.ordenarLista();
+            this.setNumDatos();
             f.close();
         }
     }
@@ -109,7 +112,7 @@ public class ListaAristas{
         return this.numDatos==this.aristas.length;
     }
 
-    private boolean listaVacia(){
+    public boolean listaVacia(){
         return this.numDatos==0;
     }
 
@@ -120,14 +123,22 @@ public class ListaAristas{
     public Arista verArista(int n){
         return this.aristas[n];
     }
-    
+
     public boolean elemOrdenados(int pos1, int pos2){
         return this.aristas[pos1].ordenadoRespA(this.aristas[pos2]);
     }
-    
+
+    //Modificador del numero de datos
+    private void setNumDatos(){
+        int i=0; 
+        while(!this.aristas[i].aristaVacia()){
+            i++;
+        }
+        this.numDatos=i;
+    }
+
     public int verNodosInicioIguales(int n1){
-        int res=0, cont=0;
-        while(cont<this.numDatos&&this.verArista(cont).verN1()<n1)cont++;
+        int res=0, cont=this.verPosNodo(n1);
         while(cont<this.numDatos&&this.verArista(cont).verN1()==n1){
             res++;
             cont++;
@@ -135,6 +146,8 @@ public class ListaAristas{
         return res;
     }
     
+    
+
     /**
      * Búsqueda dicotómica de la posición de la primera aparición 
      * de un nodo inicial en concreto
@@ -158,9 +171,9 @@ public class ListaAristas{
         }
 
         return indice;
-        
+
     }
-    
+
     /**
      * Métodos de ordenación
      */
@@ -173,94 +186,93 @@ public class ListaAristas{
         }while(ordenada&&i+1<this.aristas.length);
         return ordenada;
     }
-    
+
     public void ordenarLista(){
-        Arista apoyo;
-        for(int i=1; i<this.numDatos; i++){
-            apoyo=this.aristas[i];
-            int j=i;
-            while(j>0&&!this.aristas[j-1].ordenadoRespA(apoyo)){
-                this.aristas[j]=this.aristas[j-1];
-                j=j-1;
+        Arista menor;
+        int i,j, posMenor;
+
+        for(i=0; i<this.numDatos-1; i++){
+            menor=this.aristas[i];
+            posMenor=i;
+            for(j=i+1; j<this.numDatos; j++){
+                if(!(menor.verN1()<this.aristas[j].verN1()||!(menor.verN1()<this.aristas[j].verN1())&&menor.verN1()==this.aristas[j].verN1())&&
+                menor.verN2()<this.aristas[j].verN2()){
+                    menor=this.aristas[j];
+                    posMenor=j;
+                }
+
             }
-            this.aristas[j]=apoyo;
+            this.aristas[posMenor]=this.aristas[i];
+            this.aristas[i]=menor;
         }
     }
-    
+
     /**
      * Escribe la lista
      */
     public void escribirLista(){
         for(int i=0; i<this.numDatos; i++){
             System.out.printf(Locale.ENGLISH,
-            "El nodo inicial es: %1d \t El nodo final es: %2d \t El peso de la arista es: %3$.3f\n"
+                "El nodo inicial es: %1d \t El nodo final es: %2d \t El peso de la arista es: %3$.3f\n"
             , this.aristas[i].verN1(), this.aristas[i].verN2(), 
-            this.aristas[i].verPeso());
-            
+                this.aristas[i].verPeso());
+
         }
     }
 
-    /**
-     * Añade una arista de forma que quede ordenada
-     */
     public void anadeArista(Arista ar){
-        int m, i, s;
         if(!this.listaLlena()){
-            i = 0;
-            s = this.numDatos-1;
-            while(i != s){
-                m = ( i + s ) / 2 ;
-                if (this.aristas[m].ordenadoRespA(ar)){
-                    s = m;
+
+            if(this.numDatos==0){
+                this.aristas[0]=new Arista(ar);
+                this.numDatos++;
+            }else{
+                int i = this.numDatos-1;
+                int posTeorica = this.busquedaPosDico(ar);
+                if(posTeorica!=-1&&this.aristas[posTeorica].verPeso()>ar.verPeso()){
+                    this.aristas[posTeorica]=new Arista(ar);
                 }else{
-                    i = m + 1;
+                    while(i>=0 && !this.aristas[i].ordenadoRespA(ar)){
+                        this.aristas[i+1]=this.aristas[i];
+                        i=i-1;
+                    }
+                    this.aristas[i+1]=new Arista(ar);
+                    this.numDatos++;   
                 }
             }
-            if ((this.aristas[i] != null)){
-                if(!this.aristas[i].igualA(ar)){
-                    this.hazHueco(i);
-                    this.aristas[i] = ar;
-                    this.numDatos ++;
-                }else{
-                    System.out.println("se han encontrado 2 aristas iguales, la mas reciente "+
-                        "se ignorará");
-                }
-            }else {
-                this.aristas[i] = ar;
-                this.numDatos ++;
-            }
+
         }else{
             this.amplia();
-            i = 0;
-            s = this.numDatos-1;
-            while(i != s){
-                m = ( i + s ) / 2 ;
-                if (this.aristas[m].ordenadoRespA(ar)){
-                    s = m;
+
+            if(this.numDatos==0){
+                this.aristas[0]=new Arista(ar);
+                this.numDatos++;
+            }else{
+                int i = this.numDatos-1;
+                int posTeorica = this.busquedaPosDico(ar);
+                if(posTeorica!=-1&&this.aristas[posTeorica].verPeso()>ar.verPeso()){
+                    this.aristas[posTeorica]=new Arista(ar);
                 }else{
-                    i = m + 1;
+                    while(i>=0 && !this.aristas[i].ordenadoRespA(ar)){
+                        this.aristas[i+1]=this.aristas[i];
+                        i=i-1;
+                    }
+                    this.aristas[i+1]=new Arista(ar);
+                    this.numDatos++;   
                 }
             }
-            if ((this.aristas[i] != null)){
-                if(!this.aristas[i].igualA(ar)){
-                    this.hazHueco(i);
-                    this.aristas[i] = ar;
-                    this.numDatos ++;
-                }else{
-                    System.out.println("se han encontrado 2 aristas iguales, la mas reciente "+
-                        "se ignorará");
-                }
-            }else {
-                this.aristas[i] = ar;
-                this.numDatos ++;
-            }
+
         }
+        this.ordenarLista();
     }
-    
+
     public void amplia (){
-        Arista [] nuevo = new Arista [this.aristas.length + 50];
-        for(int i = 0; i < this.aristas.length; i++){
+        Arista [] nuevo = new Arista [this.aristas.length + 10];
+        for(int i = 0; i < this.numDatos; i++){
             nuevo[i] = this.aristas[i];
+        }
+        for(int j=this.numDatos; j<nuevo.length; j++){
+            nuevo[j]= new Arista();
         }
         this.aristas = nuevo;
     }
@@ -271,16 +283,16 @@ public class ListaAristas{
     public int busquedaPosDico (Arista ar){
         int m, i, s;
         i = 0;
-        s = this.numDatos;
-        while(i != s&&i<this.numDatos){
+        s = this.numDatos-1;
+        while(i != s){
             m = ( i + s ) / 2 ;
-            if (this.aristas[m].anteriorA(ar)){
+            if (ar.ordenadoRespA(this.aristas[m])){
                 s = m;
             }else{
                 i = m + 1;
             }
         }
-        if ((this.aristas[i] != null)){
+        if ((!this.aristas[i].aristaVacia())){
             if(this.aristas[i].igualA(ar)){
                 return i;
             }else{
@@ -290,7 +302,7 @@ public class ListaAristas{
             return -1;
         }
     } 
-    
+
     public boolean esTerminal(int nodo){
         boolean loEs = false, existe=true;
         int i=0, apoyo;
@@ -301,7 +313,7 @@ public class ListaAristas{
         }
         return loEs;
     }
-    
+
     private void hazHueco (int hueco){
         if(hueco + 1 < this.aristas.length){
             for(int carro = this.numDatos; carro > hueco; carro --){
@@ -322,8 +334,6 @@ public class ListaAristas{
         return indice;
     }
 
-    
-
     private int numeroBucles(){
         int res=-1;
         if(!this.listaVacia()){
@@ -334,7 +344,7 @@ public class ListaAristas{
         }
         return res;
     }
-    
+
     private int gradoNodo(int N1){
         int res=-1, posN=0;
         if(!this.listaVacia()){
@@ -350,11 +360,13 @@ public class ListaAristas{
         }
         return res;
     }
-    
+
     public void quitaArista(Arista ar){
         int pos = this.busquedaPosDico(ar);
-        if(pos!=-1)
-            for(int i = pos; i+1<this.numDatos; i++)
+        if(pos!=-1){
+            for(int i = pos; i<this.numDatos; i++)
                 this.aristas[i]=this.aristas[i+1];
+            this.numDatos--;
+        }
     }
 }

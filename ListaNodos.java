@@ -36,6 +36,14 @@ public class ListaNodos
         this.nodos[numNodos] = new Nodo(n);
         this.numNodos ++;
     }
+    
+    public void amplia(){
+        Nodo [] copia = new Nodo [this.nodos.length + 10];
+        for(int i = 0; i < this.numNodos; i++){
+            copia [i] = this.nodos[i];
+        }
+        this.nodos = copia;
+    }
 
     public void anadir(ListaNodos lista){
 
@@ -163,49 +171,6 @@ public class ListaNodos
             this.nodos [i] = this.nodos [i + 1];
         }
         this.numNodos --;
-    }
-    
-
-    public static ListaNodos nodosAlcanzablesDesde(int nodo, int numDatos,
-    ListaAristas lista){
-        int i=0, posIn=lista.verPosNodo(nodo);
-        int trayect=1, numNodosIguales=lista.verNodosInicioIguales(nodo);
-        int nodoSig;
-        double pesoAnt;
-        ListaNodos res =null;
-        if(posIn!=-1){
-            //Primero ver los que tienen como nodo inicial el que se pasa por parámetro
-            //Luego ver los que tienen como nodo inicial el nodo final de las aristas que hemos mirado antes
-            //Repetir el anterior
-            pesoAnt=lista.verArista(posIn).verPeso();
-            res = new ListaNodos(numDatos*numNodosIguales);
-            while(i<numNodosIguales&&posIn<lista.verNumDatos()){
-                res.nodos[i]=new Nodo(lista.verArista(posIn).verN2(),trayect,
-                    lista.verArista(posIn).verPeso());           
-                i++;
-                posIn++;
-            }
-            res.numNodos=i;
-            int l=0, m=0;
-            int memoria=res.nodos[i-1].verIdent();
-            while(l<res.numNodos){
-                nodoSig=res.nodos[l].verIdent();
-                numNodosIguales=lista.verNodosInicioIguales(nodoSig);
-                posIn=lista.verPosNodo(nodoSig);
-                if(nodoSig<memoria)trayect++;
-                while(m<numNodosIguales&&posIn<lista.verNumDatos()&&posIn!=-1){
-                    res.nodos[i]=new Nodo(lista.verArista(posIn).verN2(),trayect,
-                        lista.verArista(posIn).verPeso());           
-                    i++;
-                    m++;
-                    posIn++;
-                }
-                res.numNodos+=m;
-                m=0;
-                l++;
-            }
-        }
-        return res;
     }
 
     /**
